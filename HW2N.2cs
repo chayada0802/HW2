@@ -1,0 +1,255 @@
+﻿using System;
+using System.Collections.Generic;
+namespace HW2N2
+{
+    enum Menu
+    {
+        RegisterStudent = 1, 
+        RegisterTeacher=2,
+        GetPersonsList=3
+    }
+    class Program
+    {
+        static PersonList ActivityList;
+        static void Main(string[] args)
+        {
+            PreparePerson();
+            PrintMenuScreen();
+        }
+        static void PreparePerson()
+        {
+            Program.ActivityList = new PersonList();
+        }
+
+        static void PrintMenuScreen()
+        {
+            Console.Clear();
+            PrintHeader();
+            PrintMenu();
+            InputMenuFromKeyboard();
+        }
+        static void PrintHeader()
+        {
+            Console.WriteLine("Welcome to registration activity");
+            Console.WriteLine("----------------------");
+        }
+
+        static void PrintMenu()
+        {
+            Console.WriteLine("1.Register new activity for student.");
+            Console.WriteLine("2.Register new activity for teacher.");
+            Console.WriteLine("3.Get PersonList");
+
+        }
+
+        static void InputMenuFromKeyboard()
+        {
+            Console.Write("Select Menu :");
+            Menu menu = (Menu)(int.Parse(Console.ReadLine()));
+            PresentMenu(menu);
+        }
+        static void PresentMenu(Menu menu)
+        {
+            if (menu == Menu.RegisterStudent)
+            {
+                ShowInputRegisterForStudent();
+            }
+            else if (menu == Menu.RegisterTeacher)
+            {
+                ShowInputRegisterNTeacher();
+            }
+            else if (menu == Menu.GetPersonsList)
+            {
+                ShowGetListPersonScreen();
+            }
+            else
+            {
+                ShowMessageInputMenuIsInCorrect();
+            }
+        }
+        static void ShowInputRegisterForStudent()
+        {
+            Console.Clear();
+            PrintHeaderForStudent();
+
+            int totalActivityForStudent = TotalNewActivityForStudents();
+            InputForStudentFromKeyboard(totalActivityForStudent);
+        }
+        static void ShowInputRegisterNTeacher()
+        {
+            Console.Clear();
+            PrintHeaderForTeacher();
+            int totalActivityForTeacher = TotalNewTeacher();
+            InputTeacherFromKeyboard(totalActivityForTeacher);
+        }
+        static void ShowGetListPersonScreen()
+        {
+            Console.Clear();
+            Program.ActivityList.FetchPersonsList();
+            InputExitFromKeyboard();
+        }
+        static void InputExitFromKeyboard()
+        {
+            string text = "";
+            while (text != "exit")
+            {
+                Console.Write("Input :");
+                text = Console.ReadLine();
+            }
+            Console.Clear();
+            PrintMenuScreen();
+        }
+        static void InputTeacherFromKeyboard(int totalActivityForTeacher)
+        {
+            for (int i = 0; i < totalActivityForTeacher; i++)
+            {
+                Console.Clear();
+                PrintHeaderForTeacher();
+
+                Teacher teacher = CreateNewActivityForTeacher();
+
+                Program.ActivityList.AddNewActivity(teacher);
+            }
+            Console.Clear();
+            PrintMenuScreen();
+        }
+
+        static void InputForStudentFromKeyboard(int totalActivityForStudent)
+        {
+            for (int i = 0; i < totalActivityForStudent; i++)
+            {
+                Console.Clear();
+                PrintHeaderForStudent();
+
+                Student student = CreateNewActivityForStudent();
+                Program.ActivityList.AddNewActivity(student);
+            }
+
+            Console.Clear();
+            PrintMenuScreen();
+        }
+
+        static Student CreateNewActivityForStudent()
+        {
+            return new Student(InputName(),
+                InputStudentID(), 
+                InputActivity());
+        }
+        static Teacher CreateNewActivityForTeacher()
+        {
+            return new Teacher(InputName(),
+                InputTeacherID(), 
+                InputActivity());
+        }
+        static string InputName()
+        {
+
+            Console.Write("Name :");
+            return Console.ReadLine();
+        }
+        static string InputStudentID()
+        {
+            Console.Write("Student ID :");
+            return Console.ReadLine();
+        }
+        static string InputTeacherID()
+        {
+            Console.Write("Teacher ID :");
+            return Console.ReadLine();
+        }
+        static string InputActivity()
+        {
+            Console.Write("Activity :");
+            return Console.ReadLine();
+        }
+        static int TotalNewActivityForStudents()
+        {
+            Console.Write("Input Total new activity for student :");
+            return int.Parse(Console.ReadLine());
+        }
+        static int TotalNewTeacher()
+        {
+            Console.Write("Input Total activity for Teacher :");
+            return int.Parse(Console.ReadLine());
+        }
+        static void PrintHeaderForStudent()
+        {
+            Console.WriteLine("Register activity for student.");
+            Console.WriteLine("------------");
+        }
+        static void PrintHeaderForTeacher()
+        {
+            Console.WriteLine("Register activity for teacher.");
+            Console.WriteLine("-------------");
+        }
+        static void ShowMessageInputMenuIsInCorrect()
+        {
+            Console.Clear();
+            Console.WriteLine("Menu incorrect!!!!");
+            InputMenuFromKeyboard();
+        }
+    }
+    class Person
+    {
+        protected string name;
+        protected string activity;
+        public Person(string name, string activity)
+        {
+            this.name = name;
+            this.activity = activity;
+        }
+        public string GetName()
+        {
+            return this.name;
+        }
+        public string GetActivity()
+        {
+            return this.activity;
+        }
+    }
+    class PersonList
+    {
+        private List<Person> personList;
+        public PersonList()
+        {
+            this.personList = new List<Person>();
+        }
+        public void AddNewActivity(Person person)
+        {
+            this.personList.Add(person);
+        }
+        public void FetchPersonsList()
+        {
+            Console.WriteLine("List Person");
+            Console.WriteLine("-------------------");
+            foreach (Person person in this.personList)
+            {
+                if (person is Student)
+                {
+                    Console.WriteLine("Name : {0} \n Type : Student \n Activity : {1}", person.GetName(), person.GetActivity());
+                }
+                else if (person is Teacher)
+                {
+                    Console.WriteLine("Name : {0} \n Type : Teacher \n Activity : {1}", person.GetName(), person.GetActivity());
+                }
+            }
+        }
+    }
+    class Student : Person
+    {
+        private string studentID;
+        public Student(string name, string studentID, string activity) : base(name, activity)
+        {
+            this.studentID = studentID;
+        }
+    }
+    class Teacher : Person
+    {
+        private string teacherID;
+        public Teacher(string name, string teacherID, string activity) : base(name, activity)
+        {
+            this.teacherID = teacherID;
+        }
+    }
+}
+   
